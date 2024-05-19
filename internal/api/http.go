@@ -3,8 +3,8 @@ package api
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"payment-system-two/internal/models"
-	"payment-system-two/internal/ports"
+	"payment-system-one/internal/models"
+	"payment-system-one/internal/ports"
 )
 
 type HTTPHandler struct {
