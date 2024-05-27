@@ -1,6 +1,7 @@
 package models
 
 import "gorm.io/gorm"
+import "time"
 
 type User struct {
 	gorm.Model
@@ -31,6 +32,23 @@ type Transaction struct {
 }
 
 type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Admin struct {
+	gorm.Model
+	First_name   string    `json:"first_name"`
+	Last_name    string    `json:"last_name"`
+	User_name    string    `json:"user_name"`
+	Email        string    `json:"email"`
+	Password     string    `json:"password"`
+	LoginCounter int       `json:"login_counter"`
+	IsLocked     bool      `json:"is_locked"`
+	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+type AdminRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

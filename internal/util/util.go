@@ -20,7 +20,10 @@ func Response(c *gin.Context, message string, status int, data interface{}, errs
 	c.IndentedJSON(status, responsedata)
 }
 
+// Hash password changes the password to bytes, it sorts of encrypts the password
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
 }
+
+//Function for

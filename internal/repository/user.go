@@ -25,3 +25,30 @@ func (p *Postgres) UpdateUser(user *models.User) error {
 	}
 	return nil
 }
+
+// function for create admin
+func (p *Postgres) CreateAdmin(admin *models.Admin) error {
+	if err := p.DB.Create(admin).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Function for finding admin by email
+func (p *Postgres) FindAdminByEmail(email string) (*models.Admin, error) {
+	admin := &models.Admin{}
+
+	if err := p.DB.Where("email = ?", email).First(&admin).Error; err != nil {
+		return nil, err
+	}
+	return admin, nil
+}
+
+// function for update Admin
+
+func (p *Postgres) UpdateAdmin(admin *models.Admin) error {
+	if err := p.DB.Save(admin).Error; err != nil {
+		return err
+	}
+	return nil
+}
