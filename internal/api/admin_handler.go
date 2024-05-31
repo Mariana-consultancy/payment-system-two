@@ -8,6 +8,7 @@ import (
 	"payment-system-one/internal/middleware"
 	"payment-system-one/internal/models"
 	"payment-system-one/internal/util"
+	"golang.org/x/crypto/bcrypt"
 )
 
 //Create admin function for handler
@@ -18,13 +19,21 @@ func (u *HTTPHandler) CreateAdmin(c *gin.Context) {
 		util.Response(c, "invalid request", 400, "bad request body", nil)
 		return
 	}
+	
 	err := u.Repository.CreateAdmin(admin)
 	if err != nil {
 		util.Response(c, "admin not created", 400, err.Error(), nil)
 		return
 	}
 	util.Response(c, "admin created", 200, "success", nil)
-
+		// hashPassword
+	hashPass, err := util.HashPassword(admin.Password)
+	if err != nil {
+		util.Response(c, "Password not hashed", 404, "not hased", nil)
+		return
+		}
+		admin.Password = hashPass
+		
 }
 
 // admin login
@@ -44,19 +53,21 @@ func (u *HTTPHandler) LoginAdmin(c *gin.Context) {
 		return
 	}
 
-	// hashPassword
-	hashPass, err := util.HashPassword(admin.Password)
-	if err != nil {
-		util.Response(c, "Password not hashed", 404, "not hased", nil)
-		return
-	}
-	admin.Password = hashPass
-
 	if admin.Password != adminLoginRequest.Password {
 		if err != nil {
 			util.Response(c, "internal server error", 500, "user not found", nil)
 			return
 		}
+		util.Response(c, "password mismatch", 404, "user not found", nil)
+		return
+	}
+
+	if err = bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(adminLoginRequest.Password)); err != nil {
+		util.Response(c, "invalid password", 400, "invalid request", nil)
+	}
+
+	if admin.Password != adminLoginRequest.Password {
+
 		util.Response(c, "password mismatch", 404, "user not found", nil)
 		return
 	}
