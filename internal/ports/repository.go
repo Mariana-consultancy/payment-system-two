@@ -10,4 +10,5 @@ type Repository interface {
 	CreateAdmin(admin *models.Admin) error
 	FindAdminByEmail(email string) (*models.Admin, error)
 	UpdateAdmin(admin *models.Admin) error
+	FindUserByAccNo(accountNo int) (*models.User, error)
 }

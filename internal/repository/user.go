@@ -11,6 +11,15 @@ func (p *Postgres) FindUserByEmail(email string) (*models.User, error) {
 	return user, nil
 }
 
+// function to find user by ACC no
+func (p *Postgres) FindUserByAccNo(accountNo int) (*models.User, error) {
+	user := &models.User{}
+	if err := p.DB.Where("accountNo = ?", accountNo).First(&user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // create a user in thye database
 func (p *Postgres) CreateUser(user *models.User) error {
 	if err := p.DB.Create(user).Error; err != nil {

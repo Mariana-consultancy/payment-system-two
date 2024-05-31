@@ -1,10 +1,15 @@
 package util
 
 import (
+	//"encoding/binary"
+	//"crypto/rand"
+	"math/rand"
+	"net/http"
+	"net/mail"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
-	"net/http"
-	"time"
 )
 
 // Response is customized to help return all responses need
@@ -26,4 +31,21 @@ func HashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-//Function for
+// Function for
+func IsValidEmail(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
+}
+
+const (
+	min = 11111111
+	max = 99999999
+)
+
+// function to Generate unique Account numbers
+func GenerateAccountNo() (int, error) {
+
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min, nil
+
+}

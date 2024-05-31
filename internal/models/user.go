@@ -1,19 +1,18 @@
 package models
 
 import "gorm.io/gorm"
-import "time"
 
 type User struct {
 	gorm.Model
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
-	Password     string `json:"password"`
-	DateOfBirth  string `json:"date_of_birth"`
-	Email        string `json:"email"`
-	Phone        string `json:"phone"`
-	Address      string `json:"address"`
-	LoginCounter int    `json:"login_counter"`
-	IsLocked     bool   `json:"is_locked"`
+	FirstName      string  `json:"first_name"`
+	LastName       string  `json:"last_name"`
+	Password       string  `json:"password"`
+	DateOfBirth    string  `json:"date_of_birth"`
+	Email          string  `json:"email"`
+	Phone          string  `json:"phone"`
+	Address        string  `json:"address"`
+	AccountNo      int     `json:"accountNo"`
+	AccountBalance float32 `json:"accountBalance"`
 }
 
 //type UserProfile struct {
@@ -35,20 +34,12 @@ type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
-
-type Admin struct {
-	gorm.Model
-	First_name   string    `json:"first_name"`
-	Last_name    string    `json:"last_name"`
-	User_name    string    `json:"user_name"`
-	Email        string    `json:"email"`
-	Password     string    `json:"password"`
-	LoginCounter int       `json:"login_counter"`
-	IsLocked     bool      `json:"is_locked"`
-	UpdatedAt    time.Time `json:"updated_at"`
+type AddFunds struct {
+	AccountNo int     `json:"accountNo"`
+	Amount    float64 `json:"amount"`
 }
 
-type AdminRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+type TransferMoney struct {
+	RecipiencACC int     `json:"recipienAcc"`
+	Amount       float64 `json:"amount"`
 }
