@@ -19,8 +19,14 @@ func (u *HTTPHandler) CreateAdmin(c *gin.Context) {
 		util.Response(c, "invalid request", 400, "bad request body", nil)
 		return
 	}
+		// check if admin email is valid
+	if !util.IsValidEmail(admin.Email) {
+		util.Response(c, "invalid email", 400, "Bad request", nil)
+		return
+	}
+
 	//validate admin email
-	_, err := u.Repository.FindUserByEmail(admin.Email)
+	_, err := u.Repository.FindAdminByEmail(admin.Email)
 	if err == nil {
 		util.Response(c, "admin does exist", 404, "admin already exists", nil)
 		return
@@ -29,7 +35,7 @@ func (u *HTTPHandler) CreateAdmin(c *gin.Context) {
 		// hashPassword
 	hashPass, err := util.HashPassword(admin.Password)
 	if err != nil {
-		util.Response(c, "Password not hashed", 404, "not hased", nil)
+		util.Response(c, "Password not hashed", 404, "not hashed", nil)
 		return
 		}
 		admin.Password = hashPass
