@@ -1,6 +1,9 @@
 package repository
 
-import "payment-system-one/internal/models"
+import (
+	"payment-system-one/internal/models"
+	"time"
+)
 
 func (p *Postgres) FindUserByEmail(email string) (*models.User, error) {
 	user := &models.User{}
@@ -59,5 +62,74 @@ func (p *Postgres) UpdateAdmin(admin *models.Admin) error {
 	if err := p.DB.Save(admin).Error; err != nil {
 		return err
 	}
+	return nil
+}
+
+// Transfer Funds function
+
+func (p *Postgres) Transferfunds(user *models.User, recipient *models.User, amount float64) error {
+
+	tx := p.DB.Begin()
+	// deduct the amount from the payer
+
+	user.AccountBalance -= amount
+	// add the amount to the recipients acc
+
+	recipient.AccountBalance += amount
+
+	// save the transaction for the one paying
+
+	if err := tx.Save(user).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// save the transaction for the recipient
+
+	if err := tx.Save(recipient).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	// save the transaction in the transaction table
+	transaction := &models.Transaction{
+		PayerAccount:      user.AccountNo,
+		RecipientsAccount: recipient.AccountNo,
+		TransactionType:   "debit",
+		TransactionAmount: amount,
+		TransactionDate:   time.Now(),
+	}
+	if err := tx.Create(transaction).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
+	return nil
+}
+
+// Add Funds code
+func (p *Postgres) ADDfunds(user *models.User, amount float64) error {
+
+	tx := p.DB.Begin()
+
+	// add the money to the user acc
+	user.AccountBalance += amount
+
+	// update the acc balance of the user by saving it
+	if err := tx.Save(user).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	// save the transaction in the transaction table
+	transaction := &models.Transaction{
+		PayerAccount:      user.AccountNo,
+		TransactionType:   "debit",
+		TransactionAmount: amount,
+		TransactionDate:   time.Now(),
+	}
+	if err := tx.Create(transaction).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	tx.Commit()
 	return nil
 }

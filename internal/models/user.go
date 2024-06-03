@@ -1,6 +1,7 @@
 package models
 
 import "gorm.io/gorm"
+import "time"
 
 type User struct {
 	gorm.Model
@@ -12,7 +13,7 @@ type User struct {
 	Phone          string  `json:"phone"`
 	Address        string  `json:"address"`
 	AccountNo      int     `json:"accountNo"`
-	AccountBalance float32 `json:"accountBalance"`
+	AccountBalance float64 `json:"accountBalance"`
 }
 
 //type UserProfile struct {
@@ -24,19 +25,19 @@ type User struct {
 
 type Transaction struct {
 	gorm.Model
-	UserID          uint    `json:"user_id"`
-	Amount          float64 `json:"amount"`
-	Reference       string  `json:"reference"`
-	TransactionType string  `json:"transaction_type"`
+	PayerAccount      int       `json:"payerAccount"`
+	RecipientsAccount int       `json:"recipientsAccount"`
+	TransactionType   string    `json:"transactionType"`
+	TransactionAmount float64   `json:"transactionAmount"`
+	TransactionDate   time.Time `json:"transactionDate"`
 }
 
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
-type AddFunds struct {
-	AccountNo int     `json:"accountNo"`
-	Amount    float64 `json:"amount"`
+type AddMoney struct {
+	Amount float64 `json:"amount"`
 }
 
 type TransferMoney struct {
