@@ -4,8 +4,8 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/ports"
+	"payment-system-two/internal/models"
+	"payment-system-two/internal/ports"
 )
 
 type Postgres struct {

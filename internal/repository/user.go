@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"payment-system-one/internal/models"
+	"payment-system-two/internal/models"
 	"time"
 )
 
@@ -17,7 +17,7 @@ func (p *Postgres) FindUserByEmail(email string) (*models.User, error) {
 // function to find user by ACC no
 func (p *Postgres) FindUserByAccNo(accountNo int) (*models.User, error) {
 	user := &models.User{}
-	if err := p.DB.Where("accountNo = ?", accountNo).First(&user).Error; err != nil {
+	if err := p.DB.Where("account_no = ?", accountNo).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -77,7 +77,7 @@ func (p *Postgres) Transferfunds(user *models.User, recipient *models.User, amou
 
 	recipient.AccountBalance += amount
 
-	// save the transaction for the one paying
+	// save the transaction for the two paying
 
 	if err := tx.Save(user).Error; err != nil {
 		tx.Rollback()

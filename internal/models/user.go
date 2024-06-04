@@ -12,16 +12,9 @@ type User struct {
 	Email          string  `json:"email"`
 	Phone          string  `json:"phone"`
 	Address        string  `json:"address"`
-	AccountNo      int     `json:"accountNo"`
+	AccountNo      int     `json:"account_no"`
 	AccountBalance float64 `json:"accountBalance"`
 }
-
-//type UserProfile struct {
-//	gorm.Model
-//	ValidIdentity string `json:"valid_identity"`
-//	PassPort string `json:"passport"`
-//
-//}
 
 type Transaction struct {
 	gorm.Model
@@ -41,6 +34,6 @@ type AddMoney struct {
 }
 
 type TransferMoney struct {
-	RecipiencACC int     `json:"recipienAcc"`
-	Amount       float64 `json:"amount"`
+	AccountNo int     `json:"account_no"`
+	Amount    float64 `json:"amount"`
 }

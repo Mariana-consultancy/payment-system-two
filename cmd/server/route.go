@@ -3,9 +3,9 @@ package server
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"payment-system-one/internal/api"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/ports"
+	"payment-system-two/internal/api"
+	"payment-system-two/internal/middleware"
+	"payment-system-two/internal/ports"
 	"time"
 )
 
@@ -26,26 +26,26 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		r.GET("/", handler.Readiness)
 		r.POST("/create", handler.CreateUser)
 		r.POST("/login", handler.LoginUser)
-		r.POST("/createAdmin", handler.CreateAdmin)
-		r.POST("/adminlogin", handler.LoginAdmin)
+		r.POST("/admin/create", handler.CreateAdmin)
+		r.POST("/admin/login", handler.LoginAdmin)
+	}
+
+	// authorizeUser authorizes all authorized users handlers
+	authorizeUser := r.Group("/user")
+	authorizeUser.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
+	{
+		authorizeUser.POST("/transfer", handler.TransferFunds)
+		authorizeUser.POST("/addfunds", handler.AddFunds)
 
 	}
-	user := r.Group("/user")
-	{
 
-	}
-	user.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
-	{
-		user.POST("/addfunds", handler.AddFunds)
-		user.POST("/transferfunds", handler.TransferFunds)
-	}
 	// authorizeAdmin authorizes all authorized users handlers
 	authorizeAdmin := r.Group("/admin")
 	authorizeAdmin.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
 	{
 		authorizeAdmin.GET("/user", handler.GetUserByEmail)
+
 	}
 
 	return router
-
 }

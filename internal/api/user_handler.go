@@ -3,9 +3,9 @@ package api
 import (
 	"net/http"
 	"os"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
+	"payment-system-two/internal/middleware"
+	"payment-system-two/internal/models"
+	"payment-system-two/internal/util"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -164,7 +164,7 @@ func (u *HTTPHandler) TransferFunds(c *gin.Context) {
 	// check if the account number exists
 	/// db method of finding user by acount, and actual user that exist
 	// find user by account method in the repository user.go
-	recipient, err := u.Repository.FindUserByAccNo(transferMoney.RecipiencACC)
+	recipient, err := u.Repository.FindUserByAccNo(transferMoney.AccountNo)
 	if err != nil {
 		util.Response(c, "user not fount", 404, "Recipient account not found", nil)
 		return

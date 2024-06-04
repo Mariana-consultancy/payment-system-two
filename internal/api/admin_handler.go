@@ -6,9 +6,9 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 	"os"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
+	"payment-system-two/internal/middleware"
+	"payment-system-two/internal/models"
+	"payment-system-two/internal/util"
 )
 
 //Create admin function for handler
