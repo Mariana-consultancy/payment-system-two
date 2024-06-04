@@ -3,9 +3,9 @@ package api
 import (
 	"net/http"
 	"os"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
+	"payment-system-two/internal/middleware"
+	"payment-system-two/internal/models"
+	"payment-system-two/internal/util"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

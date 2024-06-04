@@ -16,13 +16,6 @@ type User struct {
 	AccountBalance float64 `json:"account_balance"`
 }
 
-//type UserProfile struct {
-//	gorm.Model
-//	ValidIdentity string `json:"valid_identity"`
-//	PassPort string `json:"passport"`
-//
-//}
-
 type Transaction struct {
 	gorm.Model
 	PayerAccount      int       `json:"payer_account"`

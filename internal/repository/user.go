@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"payment-system-one/internal/models"
+	"payment-system-two/internal/models"
 	"time"
 )
 
@@ -77,7 +77,7 @@ func (p *Postgres) Transferfunds(user *models.User, recipient *models.User, amou
 
 	recipient.AccountBalance += amount
 
-	// save the transaction for the one paying
+	// save the transaction for the two paying
 
 	if err := tx.Save(user).Error; err != nil {
 		tx.Rollback()

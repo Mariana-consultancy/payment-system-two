@@ -1,7 +1,7 @@
 package api
 
 import (
-	"payment-system-one/internal/util"
+	"payment-system-two/internal/util"
 
 	"github.com/gin-gonic/gin"
 )
