@@ -3,9 +3,9 @@ package api
 import (
 	"net/http"
 	"os"
-	"payment-system-one/internal/middleware"
-	"payment-system-one/internal/models"
-	"payment-system-one/internal/util"
+	"payment-system-two/internal/middleware"
+	"payment-system-two/internal/models"
+	"payment-system-two/internal/util"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
@@ -81,12 +81,12 @@ func (u *HTTPHandler) LoginUser(c *gin.Context) {
 		util.Response(c, "invalid password", 400, "invalid request", nil)
 	}
 
-	if user.Password != loginRequest.Password {
+	/*if user.Password != loginRequest.Password {
 
 		util.Response(c, "password mismatch", 404, "user not found", nil)
 		return
 	}
-
+	*/
 	//Generate token
 	accessClaims, refreshClaims := middleware.GenerateClaims(user.Email)
 
@@ -136,19 +136,6 @@ func (u *HTTPHandler) GetUserByEmail(c *gin.Context) {
 	util.Response(c, "user found", 200, user, nil)
 }
 
-// ADD mmoney
-
-/*func (u *HTTPHandler) AddMoney(c *gin.Context) {
-	var addfunds models.AddFunds
-	amount= 50
-	if user.AccountNo== addfunds.AccountNo {
-		user.accountBalance=
-
-
-	}
-
-}*/
-
 // transfer Funds
 
 func (u *HTTPHandler) TransferFunds(c *gin.Context) {
@@ -157,7 +144,8 @@ func (u *HTTPHandler) TransferFunds(c *gin.Context) {
 
 	// bind data to struct json data to the struct
 	if err := c.ShouldBind(&transferMoney); err != nil {
-		util.Response(c, "Invalid Transer", 400, "bad Request", nil)
+		util.Response(c, "Invalid Transfer", 400, "bad Request", nil)
+		return
 	}
 
 	// get user from context(make sure the person logged is the owner of the ACC)
@@ -176,32 +164,96 @@ func (u *HTTPHandler) TransferFunds(c *gin.Context) {
 	// check if the account number exists
 	/// db method of finding user by acount, and actual user that exist
 	// find user by account method in the repository user.go
-	_, err = u.Repository.FindUserByAccNo(transferMoney.RecipiencACC)
+	recipient, err := u.Repository.FindUserByAccNo(transferMoney.AccountNo)
 	if err != nil {
 		util.Response(c, "user not fount", 404, "Recipient account not found", nil)
 		return
 	}
 
-	util.Response(c, "Recipient account found", 200, user, nil)
-
 	// make sure the amount they are transfering is less than the curent blance
-	if transferMoney.Amount >= float64(user.AccountBalance) {
+	if transferMoney.Amount >= user.AccountBalance {
+		util.Response(c, "insufficient funds", 400, "bad Request", nil)
+		return
+	}
+
+	// persist the data into the DB, take the money away from payer and give it to the recipient
+	err = u.Repository.Transferfunds(user, recipient, transferMoney.Amount)
+	if err != nil {
+		util.Response(c, "transfer failed", 500, "transer failed", nil)
+		return
+	}
+	util.Response(c, "transfer successful", 200, "transfer successful", nil)
+
+}
+
+// ADD mmoney
+
+func (u *HTTPHandler) AddFunds(c *gin.Context) {
+
+	// declare request
+	var addFunds models.AddMoney
+
+	// bind data to struct data struct
+	if err := c.ShouldBind(&addFunds); err != nil {
+		util.Response(c, "Invalid Transer", 400, "bad Request", nil)
+	}
+
+	// get user from context(make sure the person logged is the owner of the ACC)
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "user not fount", 500, "user not found", nil)
+		return
+	}
+
+	// validate amount make sure its more than zero
+	if addFunds.Amount <= 0 {
 		util.Response(c, "insufficient funds", 404, "bad Request", nil)
 		return
 	}
 
-	// it removes money from the customers money and updates the ACC
+	// add the money to the account and update the acc
+	// repository code and persist the data into the database
 
-	NewBalance := user.AccountBalance - float32(transferMoney.Amount)
-
-	user.AccountBalance = NewBalance
-
-	// persist the data into the DB
-	err = u.Repository.UpdateUser(user)
+	err = u.Repository.ADDfunds(user, addFunds.Amount)
 	if err != nil {
-		util.Response(c, "user not updated", 400, err.Error(), nil)
+		util.Response(c, "transfer failed", 500, "transer failed", nil)
 		return
 	}
-	util.Response(c, "user updated", 200, "Transfer success", nil)
+	util.Response(c, "Adding funds successful", 200, "successful", nil)
 
+}
+
+// Current Balance
+func (u *HTTPHandler) BalanceCheck(c *gin.Context) {
+
+	// get user from context
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "user not fount", 500, "user not found", nil)
+		return
+	}
+	// checking balance
+	util.Response(c, "Balance retrieved successfully", 200, "sucess", nil)
+	c.IndentedJSON(200, gin.H{"balance": user.AccountBalance})
+
+}
+
+// Transaction history
+
+func (u *HTTPHandler) TransactionHistory(c *gin.Context) {
+
+	// get user from context
+	user, err := u.GetUserFromContext(c)
+	if err != nil {
+		util.Response(c, "user not fount", 500, "user not found", nil)
+		return
+	}
+	// Add/ create a  function to the repository  to retrive the transacton history
+	transaction, err := u.Repository.Transaction(user.AccountNo)
+	if err != nil {
+		util.Response(c, "count not retrieve trasaction", 500, "not retrieved", nil)
+		return
+	}
+	util.Response(c, "transaction successfully retrieved", 200, "successful", nil)
+	c.IndentedJSON(200, gin.H{"Transaction History": transaction})
 }

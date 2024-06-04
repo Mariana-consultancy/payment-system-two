@@ -1,4 +1,4 @@
-module payment-system-one
+module payment-system-two
 
 go 1.22.0
 

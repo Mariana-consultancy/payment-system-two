@@ -1,6 +1,6 @@
 package ports
 
-import "payment-system-one/internal/models"
+import "payment-system-two/internal/models"
 
 type Repository interface {
 	FindUserByEmail(email string) (*models.User, error)
@@ -11,4 +11,7 @@ type Repository interface {
 	FindAdminByEmail(email string) (*models.Admin, error)
 	UpdateAdmin(admin *models.Admin) error
 	FindUserByAccNo(accountNo int) (*models.User, error)
+	Transferfunds(user *models.User, recipient *models.User, amount float64) error
+	ADDfunds(user *models.User, amount float64) error
+	Transaction(account_no int) ([]models.Transaction, error)
 }
