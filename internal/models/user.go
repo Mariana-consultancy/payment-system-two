@@ -12,8 +12,8 @@ type User struct {
 	Email          string  `json:"email"`
 	Phone          string  `json:"phone"`
 	Address        string  `json:"address"`
-	AccountNo      int     `json:"accountNo"`
-	AccountBalance float64 `json:"accountBalance"`
+	AccountNo      int     `json:"account_no"`
+	AccountBalance float64 `json:"account_balance"`
 }
 
 //type UserProfile struct {
@@ -25,11 +25,11 @@ type User struct {
 
 type Transaction struct {
 	gorm.Model
-	PayerAccount      int       `json:"payerAccount"`
-	RecipientsAccount int       `json:"recipientsAccount"`
-	TransactionType   string    `json:"transactionType"`
-	TransactionAmount float64   `json:"transactionAmount"`
-	TransactionDate   time.Time `json:"transactionDate"`
+	PayerAccount      int       `json:"payer_account"`
+	RecipientsAccount int       `json:"recipients_account"`
+	TransactionType   string    `json:"transaction_type"`
+	TransactionAmount float64   `json:"transaction_amount"`
+	TransactionDate   time.Time `json:"transaction_date"`
 }
 
 type LoginRequest struct {
@@ -41,6 +41,6 @@ type AddMoney struct {
 }
 
 type TransferMoney struct {
-	RecipiencACC int     `json:"recipienAcc"`
-	Amount       float64 `json:"amount"`
+	AccountNo int     `json:"account_no"`
+	Amount    float64 `json:"amount"`
 }

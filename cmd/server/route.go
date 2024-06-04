@@ -30,16 +30,17 @@ func SetupRouter(handler *api.HTTPHandler, repository ports.Repository) *gin.Eng
 		r.POST("/adminlogin", handler.LoginAdmin)
 
 	}
-	user := r.Group("/user")
-	{
 
-	}
-	user.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
+	// authorizeUser authorizes all authorized users handlers
+	authorizeUser := r.Group("/user")
+	authorizeUser.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))
 	{
-		user.POST("/addfunds", handler.AddFunds)
-		user.POST("/transferfunds", handler.TransferFunds)
-		user.GET("/balance", handler.BalanceCheck)
+		authorizeUser.POST("/transfer", handler.TransferFunds)
+		authorizeUser.POST("/addfunds", handler.AddFunds)
+		authorizeUser.GET("/balance", handler.BalanceCheck)
+		authorizeUser.GET("/transaction", handler.TransactionHistory)
 	}
+
 	// authorizeAdmin authorizes all authorized users handlers
 	authorizeAdmin := r.Group("/admin")
 	authorizeAdmin.Use(middleware.AuthorizeAdmin(repository.FindUserByEmail, repository.TokenInBlacklist))

@@ -13,4 +13,5 @@ type Repository interface {
 	FindUserByAccNo(accountNo int) (*models.User, error)
 	Transferfunds(user *models.User, recipient *models.User, amount float64) error
 	ADDfunds(user *models.User, amount float64) error
+	Transaction(account_no int) ([]models.Transaction, error)
 }

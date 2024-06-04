@@ -164,7 +164,7 @@ func (u *HTTPHandler) TransferFunds(c *gin.Context) {
 	// check if the account number exists
 	/// db method of finding user by acount, and actual user that exist
 	// find user by account method in the repository user.go
-	recipient, err := u.Repository.FindUserByAccNo(transferMoney.RecipiencACC)
+	recipient, err := u.Repository.FindUserByAccNo(transferMoney.AccountNo)
 	if err != nil {
 		util.Response(c, "user not fount", 404, "Recipient account not found", nil)
 		return
@@ -242,15 +242,18 @@ func (u *HTTPHandler) BalanceCheck(c *gin.Context) {
 
 func (u *HTTPHandler) TransactionHistory(c *gin.Context) {
 
-	var transactionHistory models.Transaction
 	// get user from context
 	user, err := u.GetUserFromContext(c)
 	if err != nil {
 		util.Response(c, "user not fount", 500, "user not found", nil)
 		return
 	}
-	// ADd/ create a  function to the repository  to retrive the transacton history
-
-	//
-
+	// Add/ create a  function to the repository  to retrive the transacton history
+	transaction, err := u.Repository.Transaction(user.AccountNo)
+	if err != nil {
+		util.Response(c, "count not retrieve trasaction", 500, "not retrieved", nil)
+		return
+	}
+	util.Response(c, "transaction successfully retrieved", 200, "successful", nil)
+	c.IndentedJSON(200, gin.H{"Transaction History": transaction})
 }

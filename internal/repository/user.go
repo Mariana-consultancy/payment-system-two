@@ -17,7 +17,7 @@ func (p *Postgres) FindUserByEmail(email string) (*models.User, error) {
 // function to find user by ACC no
 func (p *Postgres) FindUserByAccNo(accountNo int) (*models.User, error) {
 	user := &models.User{}
-	if err := p.DB.Where("accountNo = ?", accountNo).First(&user).Error; err != nil {
+	if err := p.DB.Where("account_no = ?", accountNo).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil
@@ -132,4 +132,14 @@ func (p *Postgres) ADDfunds(user *models.User, amount float64) error {
 	}
 	tx.Commit()
 	return nil
+}
+
+// Transaction History
+
+func (p *Postgres) Transaction(account_no int) ([]models.Transaction, error) {
+	var transaction []models.Transaction
+	if err := p.DB.Where("payer_account = ? OR recipients_account = ? ", account_no, account_no).Find(&transaction).Error; err != nil {
+		return nil, err
+	}
+	return transaction, nil
 }
